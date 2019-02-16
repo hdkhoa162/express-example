@@ -39,9 +39,17 @@ App.use(express.static(path.join(__dirname, 'public')));
 App.set('views', path.join(__dirname, 'views'));
 App.set('view engine', 'ejs');
 
+App.all("/*", function (req, res, next) {
+    // Cross site origin
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Cache-Control, Pragma, Origin, Authorization, Content-Type, X-Requested-With, X-Auth-Token");
+    res.header("Access-Control-Allow-Methods", "GET, PUT, POST, OPTIONS");
+    return next();
+});
+
 App.use(cookieParser());
-App.use(bodyParser.json());
-App.use(bodyParser.urlencoded({ extended: false }));
+App.use(bodyParser.json({ type: 'application/json', limit: '5mb' }));
+App.use(bodyParser.urlencoded({ extended: false, limit: '1mb' }));
 
 if (process.env.NODE_ENV === 'development') {
     console.log(chalk.green('\n-=-=-=-=-=-=-=-=-=-=- Development Environment -=-=-=-=-=-=-=-=-=-=-'));
